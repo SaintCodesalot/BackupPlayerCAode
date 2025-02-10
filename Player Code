@@ -1,0 +1,91 @@
+extends CharacterBody2D
+
+#Variable area
+var wSpeed = 600
+var dSpeed = 6000
+var health = 100
+var movement = true
+var canDash = true
+var Dash = 3
+var DashcountCap = 3
+var Dashrecoverytime = 1
+var Dashexhaust = 1
+var x = .4
+
+
+#grant movement
+func _movement():
+	var input_direction = Input.get_vector("left","right","up","down")
+	if movement == true:
+		velocity = input_direction * wSpeed
+	
+	
+	#Dash Code
+	if Input.is_action_just_pressed("dash") and canDash == true and Dash != 0:
+		velocity = input_direction * dSpeed 
+		Dash = Dash - Dashexhaust
+		print("amount of dashes: " + str(Dash))
+	elif Input.is_action_just_pressed("dash") and Dash == 0:
+		canDash = false
+		for i in range(3):
+			await get_tree().create_timer(1).timeout
+			$Dash_Cooldown.start(int(x))
+			print("X is currently: ", str(x), "Dashguage is currently: ", str(Dash))
+			if Dash == DashcountCap:
+				break
+				print("Dash is full")
+				
+			if canDash != true:
+				x = x * .5
+				print(str(x))
+				continue
+
+
+
+
+
+
+	#Help in telling which direction Player going
+	if Input.is_action_just_pressed("up"):
+		print("Moving Up")
+		print(input_direction)
+	elif Input.is_action_just_pressed("left"):
+		print("Moving Left")
+		print(input_direction)
+	elif Input.is_action_just_pressed("down"):
+		print("Moving Down")
+		print(input_direction)
+	elif Input.is_action_just_pressed("right"):
+		print("Moving Right")
+		print(input_direction)
+
+func Dashcheck():
+	pass
+
+
+
+func _on_dash_cooldown_timeout():
+	Dash = Dash + Dashrecoverytime
+	print(Dash)
+	print("Dashes replenished!!!" + " Current count " + str(Dash))
+	if Dash == DashcountCap:
+		canDash = true
+		print(canDash)
+		x = .4
+	
+
+
+
+
+
+func _physics_process(delta):
+	_movement()
+	move_and_slide()
+
+func update_Dash():
+	canDash = true
+	print(canDash)
+func update_DashL(delta):
+	$DashLabel.text = str(Dash,"|",DashcountCap)
+
+
