@@ -1,0 +1,34 @@
+extends CharacterBody2D
+#Variables for player movement
+var wSpeed = 400
+var dSpeed = 20
+var sSpeed = 2.2
+var canWalk = true
+var canDash = true
+var isSkating = false
+#Walking
+func _wMovement():
+	var input_direct = Input.get_vector("Left","Right","Up","Down")
+	if canWalk == true:
+		velocity = input_direct * wSpeed
+
+#Dash
+	if Input.is_action_just_pressed("Dash.Skate") and canDash == true:
+		canWalk = false
+		velocity = input_direct * (wSpeed * dSpeed)
+	elif Input.is_action_pressed("Dash.Skate"):
+		isSkating = true
+		velocity = input_direct * (wSpeed * (sSpeed-.1))
+x
+
+
+
+
+
+
+
+
+func _physics_process(delta):
+	_wMovement()
+	move_and_slide()
+	
